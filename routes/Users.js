@@ -40,13 +40,13 @@ users.post('/register',(req,res)=>{
                 User.create(userData)
                 .then(user =>{
                     res.json({
-                        status: user.Username + 'registered',
+                        status: user.Username + ' registered',
                         token: jwt.sign({
                             // Masukkan data apapun ke sini untuk disimpan ke token, tapi jangan simpan data yang sifatnya rahasia.
                             id_user: user.id_user,
                             Nama_toko: user.Nama_toko,
                             username: user.Username,
-                            roles: user.roles
+                            roles: user.Roles
                         }, process.env.SECRET_KEY)
                     });
                 })
@@ -72,17 +72,18 @@ users.post('/login',(req,res)=>{
     })
     .then(user => {
         if(user){
+            console.log(user);
             if(bcrypt.compareSync(req.body.Password, user.Password)){
                 let token = jwt.sign({
                     // Masukkan data apapun ke sini untuk disimpan ke token, tapi jangan simpan data yang sifatnya rahasia.
                     id_user: user.id_user,
                     Nama_toko: user.Nama_toko,
                     username: user.Username,
-                    roles: user.roles
+                    roles: user.Roles
                 }, process.env.SECRET_KEY,{
                     expiresIn: 1440
                 })
-                res.send(token)
+                res.send({token})
     }else{
         res.status(401).json({error: "incorrect Password"})
     }
